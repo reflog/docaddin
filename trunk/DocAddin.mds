@@ -1,0 +1,16 @@
+<Combine name="DocAddin" fileversion="2.0">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="CombineConfiguration">
+      <Entry build="True" name="DocAddin" configuration="Debug" />
+    </Configuration>
+    <Configuration name="Release" ctype="CombineConfiguration">
+      <Entry build="True" name="DocAddin" configuration="Release" />
+    </Configuration>
+  </Configurations>
+  <StartMode startupentry="DocAddin" single="True">
+    <Execute type="None" entry="DocAddin" />
+  </StartMode>
+  <Entries>
+    <Entry filename="./DocAddin/DocAddin.mdp" />
+  </Entries>
+</Combine>
