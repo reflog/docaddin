@@ -16,17 +16,18 @@
   <Contents>
     <File name="./DocAddin.cs" subtype="Code" buildaction="Compile" />
     <File name="./AssemblyInfo.cs" subtype="Code" buildaction="Compile" />
-    <File name="./gtk-gui/gui.stetic" subtype="Code" buildaction="EmbedAsResource" />
     <File name="./gtk-gui/generated.cs" subtype="Code" buildaction="Compile" />
+    <File name="./gtk-gui/DocAddin.DocerWindow.cs" subtype="Code" buildaction="Compile" />
     <File name="./DocAddin.addin.xml" subtype="Code" buildaction="Compile" />
     <File name="./DocerWindow.cs" subtype="Code" buildaction="Compile" />
-    <File name="./gtk-gui/DocAddin.DocerWindow.cs" subtype="Code" buildaction="Compile" />
     <File name="./CommentHolder.cs" subtype="Code" buildaction="Compile" />
     <File name="./DndUtils.cs" subtype="Code" buildaction="Compile" />
     <File name="./Icons" subtype="Directory" buildaction="Compile" />
     <File name="./Icons/Icons.16x16.Class" subtype="Code" buildaction="EmbedAsResource" />
     <File name="./Icons/Icons.16x16.Method" subtype="Code" buildaction="EmbedAsResource" />
     <File name="./Icons/Icons.16x16.NameSpace" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="./gtk-gui/gui.stetic" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="./test.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -43,6 +44,6 @@
     <ProjectReference type="Gac" localcopy="True" refto="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <ProjectReference type="Gac" localcopy="True" refto="gtksourceview-sharp, Version=1.0.0.2, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </References>
-  <GtkDesignInfo partialTypes="True" />
   <Deployment.LinuxDeployData scriptName="docaddin" />
+  <GtkDesignInfo partialTypes="True" />
 </Project>
