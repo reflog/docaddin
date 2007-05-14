@@ -27,7 +27,6 @@
     <File name="./Icons/Icons.16x16.Method" subtype="Code" buildaction="EmbedAsResource" />
     <File name="./Icons/Icons.16x16.NameSpace" subtype="Code" buildaction="EmbedAsResource" />
     <File name="./gtk-gui/gui.stetic" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="./test.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
