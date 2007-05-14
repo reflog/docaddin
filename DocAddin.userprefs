@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<UserCombinePreferences filename="/home/reflog/DocAddin/DocAddin.mds">
+  <Files>
+    <File filename="./DocAddin/DocAddin.cs" />
+    <File filename="./DocAddin/DocerWindow.cs" />
+    <File filename="./DocAddin/CommentHolder.cs" />
+  </Files>
+  <Views>
+    <ViewMemento Id="MonoDevelop.Ide.Gui.Pads.ProjectPad">
+      <TreeView>
+        <Node expanded="True">
+          <Node name="DocAddin" expanded="True">
+            <Node name="DocerWindow.cs" expanded="False" selected="True" />
+          </Node>
+        </Node>
+      </TreeView>
+    </ViewMemento>
+    <ViewMemento Id="MonoDevelop.Ide.Gui.Pads.ClassPad">
+      <TreeView>
+        <Node expanded="False" selected="True" />
+      </TreeView>
+    </ViewMemento>
+    <ViewMemento Id="MonoDevelop.NUnit.TestPad">
+      <TreeView>
+        <Node expanded="False" />
+      </TreeView>
+    </ViewMemento>
+    <ViewMemento Id="MonoQuery.DatabasePad">
+      <TreeView>
+        <Node expanded="False" />
+      </TreeView>
+    </ViewMemento>
+  </Views>
+  <Properties>
+    <Properties>
+      <Property key="ActiveConfiguration" value="Debug" />
+      <Property key="ActiveWindow" value="/home/reflog/DocAddin/DocAddin/DocerWindow.cs" />
+    </Properties>
+  </Properties>
+</UserCombinePreferences>
