@@ -99,7 +99,7 @@ public partial class DocerWindow : Gtk.Dialog {
             while (true) {
                 Comment c = (Comment) parser.Lexer.SpecialTracker.CurrentSpecials.Find(
                                 delegate(ISpecial it) {
-                                    return (it is Comment) && ( it.EndPosition.Y == lastPos ) && ( ((Comment)it).CommentType == CommentType.Documentation);
+                                    return (it is ICSharpCode.NRefactory.Parser.Comment) && ( it.EndPosition.Y == lastPos ) && ( ((ICSharpCode.NRefactory.Parser.Comment)it).CommentType == ICSharpCode.NRefactory.Parser.CommentType.Documentation);
                                 }
 
                             );
