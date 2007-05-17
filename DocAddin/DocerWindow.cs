@@ -42,99 +42,6 @@ public partial class DocerWindow : Gtk.Dialog {
         private string file;
 
 
-        private System.Drawing.Point getStartPosition(INode node) {
-
-            if(node is MethodDeclaration)
-                return ((MethodDeclaration)node).StartLocation;
-
-            if(node is TypeDeclaration)
-                return ((TypeDeclaration)node).StartLocation;
-
-            if(node is NamespaceDeclaration)
-                return ((NamespaceDeclaration)node).StartLocation;
-
-            return System.Drawing.Point.Empty;
-        }
-
-        private Gdk.Pixbuf getNodePic(INode node) {
-            if(node is MethodDeclaration)
-                return Gdk.Pixbuf.LoadFromResource("Icons.16x16.Method");
-
-            if(node is TypeDeclaration)
-                return Gdk.Pixbuf.LoadFromResource("Icons.16x16.Class");
-
-            if(node is NamespaceDeclaration)
-                return Gdk.Pixbuf.LoadFromResource("Icons.16x16.NameSpace");
-
-            return null;
-
-            ;
-
-        }
-
-        private string getNodeName(INode node) {
-
-            if(node is MethodDeclaration)
-                return ((MethodDeclaration)node).Name;
-
-            if(node is TypeDeclaration)
-                return ((TypeDeclaration)node).Name;
-
-            if(node is NamespaceDeclaration)
-                return ((NamespaceDeclaration)node).Name;
-
-            return "wtf?";
-        }
-
-
-        private CommentHolder findComment(INode node, IParser parser) {
-            List<string> b = new List<string>();
-            int endPos = getStartPosition(node).Y;
-            int lastPos = endPos;
-            int from = -1, to = endPos;
-
-            while (true) {
-                Comment c = (Comment) parser.Lexer.SpecialTracker.CurrentSpecials.Find(
-                                delegate(ISpecial it) {
-                                    return (it is ICSharpCode.NRefactory.Parser.Comment) && ( it.EndPosition.Y == lastPos ) && ( ((ICSharpCode.NRefactory.Parser.Comment)it).CommentType == ICSharpCode.NRefactory.Parser.CommentType.Documentation);
-                                }
-
-                            );
-
-                if (c != null) {
-                    b.Add(c.CommentText);
-                    from =c.StartPosition.Y;
-                    lastPos --;
-
-                } else {
-                    break;
-                }
-            }
-
-            b.Reverse();
-            string res = "";
-
-            foreach(string s in b) {
-                res += s + "\n";
-            }
-
-            return new CommentHolder(res, from, to);
-        }
-
-
-        private void collectNodes(INode n, IParser parser) {
-            if(
-                (n is MethodDeclaration)||
-                (n is TypeDeclaration)||
-                (n is NamespaceDeclaration)) {
-                CommentHolder c = findComment(n, parser);
-                nodes.Add(new KeyValuePair<INode, CommentHolder>(n, c));
-            }
-
-            foreach(INode n1 in n.Children) {
-                collectNodes(n1, parser);
-            }
-        }
 
         /// test1
         /// test2
@@ -148,7 +55,7 @@ public partial class DocerWindow : Gtk.Dialog {
             if(p.Errors.count > 0) return false;
 
             foreach(INode n1 in p.CompilationUnit.Children) {
-                collectNodes(n1, p);
+                Docer.collectNodes(nodes, n1, p);
             }
 
             BuildUI();
@@ -224,7 +131,7 @@ public partial class DocerWindow : Gtk.Dialog {
 
             if(o != null) {
                 KeyValuePair<INode, CommentHolder> item = (KeyValuePair<INode, CommentHolder>) o;
-                (cell as Gtk.CellRendererPixbuf).Pixbuf = getNodePic(item.Key);
+                (cell as Gtk.CellRendererPixbuf).Pixbuf = Docer.getNodePic(item.Key);
             }
         }
 
@@ -234,7 +141,7 @@ public partial class DocerWindow : Gtk.Dialog {
 
             if(o != null) {
                 KeyValuePair<INode, CommentHolder> item = (KeyValuePair<INode, CommentHolder>) o;
-                (cell as Gtk.CellRendererText).Text = getNodeName(item.Key);
+                (cell as Gtk.CellRendererText).Text = Docer.getNodeName(item.Key);
             }
         }
 
@@ -267,57 +174,6 @@ public partial class DocerWindow : Gtk.Dialog {
             return val.Val;
         }
 
-        string replaceLines(string orig, INode node, CommentHolder comment) {
-            int i=0,line=0,fromPos=-1,endPos=-1;
-            int offset = 0, funcPosEnd = -1;
-            if(comment.text != ""){
-            for(i=0;i<orig.Length;i++) {
-                if(orig[i] == '\n') line++;
-
-                if (line == comment.lineStart-2 && fromPos == -1) {
-                    fromPos = i;
-                }
-
-                if (line == comment.lineStop-1 && endPos == -1) {
-                    endPos = i;
-                }
-
-                if (line == getStartPosition(node).Y) {
-                    funcPosEnd = i;
-                }
-            }
-
-            int startCount = -1;
-            if(funcPosEnd != -1) {
-
-                for(int j=funcPosEnd-1;j>0;j--) {
-                    if (orig[j] == '\n') {
-                        startCount = j;
-                        break;
-                    }
-                }
-
-                if (startCount != -1) {
-                    int k=startCount+1,z=0;
-
-                    for(;k<funcPosEnd;k++,z++) {
-                        if(orig[k] != ' ' && orig[k] != '\t')
-                            break;
-                    }
-
-                    offset = z;
-                }
-
-            }
-
-            if (fromPos != -1 && endPos != -1) {
-                return orig.Substring(0, fromPos) + comment.prepare(offset) + orig.Substring(endPos);
-            }else if (startCount != -1){
-                return orig.Substring(0, startCount) + comment.prepare(offset) + orig.Substring(startCount);
-            }
-            }
-            return orig;
-        }
 
         public string SaveComments() {
             StreamReader sr = File.OpenText (file);
@@ -325,7 +181,7 @@ public partial class DocerWindow : Gtk.Dialog {
             sr.Close ();
             File.WriteAllText(file+".docbak", Text);
             foreach(KeyValuePair<INode, CommentHolder> p in nodes) {
-                    Text = replaceLines(Text, p.Key, p.Value);
+                    Text = Docer.replaceLines(Text, p.Key, p.Value);
             }
 
             return Text;
@@ -352,19 +208,6 @@ public partial class DocerWindow : Gtk.Dialog {
             } catch{}
         }
 
-    private string generateComment(INode node) {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("<summary> </summary>\n");
-            if (node is MethodDeclaration) {
-
-                MethodDeclaration m = node as MethodDeclaration;
-                foreach(ParameterDeclarationExpression param in m.Parameters) {
-                    sb.AppendFormat("<param name=\"{0}\"></param>\n", param.ParameterName);
-                }
-                sb.AppendFormat("<returns>{0}</returns>\n",m.TypeReference.Type);
-            }
-            return sb.ToString();
-        }
 
 
 
@@ -382,7 +225,6 @@ protected virtual void OnTagviewDragBegin(object o, Gtk.DragBeginArgs args) {}
 
         protected virtual void OnBtnAutoClicked(object sender, System.EventArgs e)
         {
-        Console.WriteLine("auto act. sel:"+funcview.Selection.GetSelectedRows().Length);
             if(funcview.Selection.GetSelectedRows().Length>0) {
                 try {
                     KeyValuePair<INode, CommentHolder> item = (KeyValuePair<INode, CommentHolder>)itemByPath(store, funcview.Selection.GetSelectedRows()[0]);
@@ -391,7 +233,7 @@ protected virtual void OnTagviewDragBegin(object o, Gtk.DragBeginArgs args) {}
                         if ((int)m.Run() == (int)ResponseType.No) return;
                     }
 
-                    sourceview.Buffer.Text = generateComment(item.Key);
+                    sourceview.Buffer.Text = Docer.generateComment(item.Key);
 
                 } catch{}
             }
@@ -408,7 +250,6 @@ protected virtual void OnTagviewDragBegin(object o, Gtk.DragBeginArgs args) {}
         protected virtual void OnTagviewMotionNotifyEvent(object o, Gtk.MotionNotifyEventArgs args)
         {
         TreePath path = null;
-        Console.WriteLine("autoOnTagviewMotionNotifyEvent");
         tagview.GetPathAtPos((int)args.Event.X, (int)args.Event.Y, out path); 
         if (path != null){
            Requisition size = tooltip_window.SizeRequest();
@@ -422,7 +263,6 @@ protected virtual void OnTagviewDragBegin(object o, Gtk.DragBeginArgs args) {}
         [GLib.ConnectBefore]
         protected virtual void OnTagviewLeaveNotifyEvent(object o, Gtk.LeaveNotifyEventArgs args)
         {
-        Console.WriteLine("OnTagviewLeaveNotifyEvent");
         tooltip_window.Hide();
         }
 
