@@ -22,14 +22,16 @@
 	<Extension path = "/SharpDevelop/Commands">
 		<Command id = "MonoDevelop.DocAddIn.Commands.OpenDocer"
 			defaultHandler = "MonoDevelop.DocAddIn.OpenDocerHandler"
-			_label = "Document the code" />
+			_label = "Document the code"
+			shortcut = "Control|D" />
 		<Command id = "MonoDevelop.DocAddIn.Commands.AutoDocer"
-			defaultHandler = "MonoDevelop.DocAddIn.AutodDocerHandler"
+			defaultHandler = "MonoDevelop.DocAddIn.AutoDocerHandler"
 			shortcut = "Control|Shift|D"
 			_label = "AutoDocument the function" />
 	</Extension>
 
 	<Extension path="/SharpDevelop/Workbench/MainMenu/Edit">
 		<CommandItem id="MonoDevelop.DocAddIn.Commands.OpenDocer" insertafter="Separator5"/>
+		<CommandItem id="MonoDevelop.DocAddIn.Commands.AutoDocer" insertafter="Separator5"/>
 	</Extension>
 </AddIn>
