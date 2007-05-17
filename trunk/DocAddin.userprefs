@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
-<UserCombinePreferences filename="/home/reflog/DocAddin/DocAddin.mds">
+<UserCombinePreferences filename="/home/reflog/docaddin/DocAddin.mds">
   <Files>
     <File filename="./DocAddin/DocAddin.cs" />
     <File filename="./DocAddin/DocerWindow.cs" />
     <File filename="./DocAddin/CommentHolder.cs" />
+    <File filename="./DocAddin/TooltipWindow.cs" />
   </Files>
   <Views>
     <ViewMemento Id="MonoDevelop.Ide.Gui.Pads.ProjectPad">
@@ -12,18 +13,16 @@
           <Node name="DocAddin" expanded="True">
             <Node name="DocerWindow.cs" expanded="False" selected="True" />
           </Node>
+          <Node name="Packages" expanded="True" />
+          <Node name="Tests" expanded="True" />
         </Node>
       </TreeView>
     </ViewMemento>
     <ViewMemento Id="MonoDevelop.Ide.Gui.Pads.ClassPad">
-      <TreeView>
-        <Node expanded="False" selected="True" />
-      </TreeView>
+      <TreeView />
     </ViewMemento>
     <ViewMemento Id="MonoDevelop.NUnit.TestPad">
-      <TreeView>
-        <Node expanded="False" />
-      </TreeView>
+      <TreeView />
     </ViewMemento>
     <ViewMemento Id="MonoQuery.DatabasePad">
       <TreeView>
@@ -34,7 +33,7 @@
   <Properties>
     <Properties>
       <Property key="ActiveConfiguration" value="Debug" />
-      <Property key="ActiveWindow" value="/home/reflog/DocAddin/DocAddin/DocerWindow.cs" />
+      <Property key="ActiveWindow" value="/home/reflog/docaddin/DocAddin/DocerWindow.cs" />
     </Properties>
   </Properties>
 </UserCombinePreferences>

@@ -1,10 +1,14 @@
 <Project name="DocAddin" fileversion="2.0" language="C#" clr-version="Net_2_0" ctype="DotNetProject">
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="DotNetProjectConfiguration">
+      <CustomCommands>
+        <Command type="BeforeExecute" command="/usr/bin/gksudo -S  cp /home/reflog/docaddin/DocAddin/bin/Debug/DocAddin.dll /usr/lib/monodevelop/AddIns/DocAddIn/" externalConsole="True" />
+        <Command type="Execute" command="monodevelop" />
+      </CustomCommands>
       <Output directory="./bin/Debug" assembly="DocAddin" />
       <Build debugmode="True" target="Library" />
       <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
-      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" win32Icon="./" ctype="CSharpCompilerParameters" />
     </Configuration>
     <Configuration name="Release" ctype="DotNetProjectConfiguration">
       <Output directory="./bin/Release" assembly="DocAddin" />
@@ -27,6 +31,7 @@
     <File name="./Icons/Icons.16x16.Method" subtype="Code" buildaction="EmbedAsResource" />
     <File name="./Icons/Icons.16x16.NameSpace" subtype="Code" buildaction="EmbedAsResource" />
     <File name="./gtk-gui/gui.stetic" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="./TooltipWindow.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -43,6 +48,6 @@
     <ProjectReference type="Gac" localcopy="True" refto="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <ProjectReference type="Gac" localcopy="True" refto="gtksourceview-sharp, Version=1.0.0.2, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </References>
-  <Deployment.LinuxDeployData scriptName="docaddin" />
   <GtkDesignInfo partialTypes="True" />
+  <Deployment.LinuxDeployData scriptName="docaddin" />
 </Project>

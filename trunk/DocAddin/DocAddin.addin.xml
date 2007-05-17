@@ -2,7 +2,8 @@
         name        = "Doc Add-in"
         author      = "Reflog"
         copyright   = "GPL"
-        url         = "http://code.goole.com"
+        namespace   = "MonoDevelop"
+        url         = "http://code.goole.com/p/docaddin"
         description = "Add-in for commenting code"
         version     = "0.1">
  
@@ -10,35 +11,25 @@
 		<Import assembly="DocAddin.dll" />
 		</Runtime>
 
-	<Dependencies>
-		<AddIn id="MonoDevelop.Core" version="0.13.0"/>
-		<AddIn id="MonoDevelop.Core.Gui" version="0.13.0"/>
-	    <AddIn id="MonoDevelop.Projects" version="0.13.0"/>
-		<AddIn id="MonoDevelop.Ide" version="0.13.0"/>
+    <Dependencies>
+		<Addin id="Core" version="0.13.0"/>
+		<Addin id="Core.Gui" version="0.13.0"/>
+	    <Addin id="Projects" version="0.13.0"/>
+		<Addin id="Ide" version="0.13.0"/>
+		<Addin id="VersionControl" version="0.13.0"/>
 	</Dependencies>
-<!--	
-	<Extension path = "/MonoDevelop/VersionControl/CommitDialogExtensions">
-		<Class class="MonoDevelop.ChangeLogAddIn.CommitDialogExtensionWidget" />
-	</Extension>
-	-->
+
 	<Extension path = "/SharpDevelop/Commands">
 		<Command id = "MonoDevelop.DocAddIn.Commands.OpenDocer"
 			defaultHandler = "MonoDevelop.DocAddIn.OpenDocerHandler"
 			_label = "Document the code" />
+		<Command id = "MonoDevelop.DocAddIn.Commands.AutoDocer"
+			defaultHandler = "MonoDevelop.DocAddIn.AutodDocerHandler"
+			shortcut = "Control|Shift|D"
+			_label = "AutoDocument the function" />
 	</Extension>
 
 	<Extension path="/SharpDevelop/Workbench/MainMenu/Edit">
 		<CommandItem id="MonoDevelop.DocAddIn.Commands.OpenDocer" insertafter="Separator5"/>
 	</Extension>
-<!--
-	<Extension path = "/SharpDevelop/Dialogs/OptionsDialog">
-		<DialogPanel id    = "ChangeLogAddInOptions"
-			insertafter = "ToolsOptions"
-			_label = "ChangeLog Add-in">
-			<DialogPanel    id = "General"
-				_label = "General"
-				class = "MonoDevelop.ChangeLogAddIn.ChangeLogAddInOptionPanel" />
-		</DialogPanel>
-	</Extension>
--->
 </AddIn>

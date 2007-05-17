@@ -18,12 +18,9 @@ namespace DocAddin {
 
 
 public partial class DocerWindow : Gtk.Dialog {
-        private static Gtk.TargetEntry [] target_table = new Gtk.TargetEntry [] {
-                    DndUtils.TargetPlain,
-                };
         Dictionary<string, string> tags = new Dictionary<string, string>();
 
-        void FillTags() {
+        void FillTags() {        
             tags["c"]="a way to indicate that text within a description should be marked as code";
             tags["code"]="a way to indicate multiple lines as code";
             tags["example"]="lets you specify an example of how to use a method or other library member";
@@ -273,7 +270,7 @@ public partial class DocerWindow : Gtk.Dialog {
         string replaceLines(string orig, INode node, CommentHolder comment) {
             int i=0,line=0,fromPos=-1,endPos=-1;
             int offset = 0, funcPosEnd = -1;
-
+            if(comment.text != ""){
             for(i=0;i<orig.Length;i++) {
                 if(orig[i] == '\n') line++;
 
@@ -290,8 +287,8 @@ public partial class DocerWindow : Gtk.Dialog {
                 }
             }
 
+            int startCount = -1;
             if(funcPosEnd != -1) {
-                int startCount = -1;
 
                 for(int j=funcPosEnd-1;j>0;j--) {
                     if (orig[j] == '\n') {
@@ -315,24 +312,23 @@ public partial class DocerWindow : Gtk.Dialog {
 
             if (fromPos != -1 && endPos != -1) {
                 return orig.Substring(0, fromPos) + comment.prepare(offset) + orig.Substring(endPos);
+            }else if (startCount != -1){
+                return orig.Substring(0, startCount) + comment.prepare(offset) + orig.Substring(startCount);
             }
-
+            }
             return orig;
         }
 
-        public void SaveComments() {
+        public string SaveComments() {
             StreamReader sr = File.OpenText (file);
             string Text = sr.ReadToEnd ();
-
             sr.Close ();
-
+            File.WriteAllText(file+".docbak", Text);
             foreach(KeyValuePair<INode, CommentHolder> p in nodes) {
-                if(p.Value.lineStart != -1) {
                     Text = replaceLines(Text, p.Key, p.Value);
-                }
             }
 
-            File.WriteAllText(file+".tmp", Text);
+            return Text;
         }
 
         void BufferChanged(object sender, EventArgs args) {
@@ -363,7 +359,7 @@ public partial class DocerWindow : Gtk.Dialog {
 
                 MethodDeclaration m = node as MethodDeclaration;
                 foreach(ParameterDeclarationExpression param in m.Parameters) {
-                    sb.AppendFormat("<param name=\"{0}\"></param>", param.ParameterName);
+                    sb.AppendFormat("<param name=\"{0}\"></param>\n", param.ParameterName);
                 }
                 sb.AppendFormat("<returns>{0}</returns>\n",m.TypeReference.Type);
             }
@@ -382,16 +378,7 @@ public partial class DocerWindow : Gtk.Dialog {
 
 protected virtual void OnTagviewDragBegin(object o, Gtk.DragBeginArgs args) {}
 
- [GLib.ConnectBefore]
-        protected virtual void OnTagviewButtonPressEvent(object o, Gtk.ButtonPressEventArgs args) {
-            if(tagview.Selection.GetSelectedRows().Length>0) {
-                try {
-                    KeyValuePair<string, string> item = (KeyValuePair<string, string>)itemByPath(tagstore, tagview.Selection.GetSelectedRows()[0]);
-                    tagdescr.Buffer.Text = item.Value;
-
-                } catch{}
-            }
-    }
+  
 
         protected virtual void OnBtnAutoClicked(object sender, System.EventArgs e)
         {
@@ -415,6 +402,28 @@ protected virtual void OnTagviewDragBegin(object o, Gtk.DragBeginArgs args) {}
             // TODO: check this
             MessageDialog m = new MessageDialog(IdeApp.Workbench.RootWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, "Validation passed!", null);
             m.Run();
+        }
+        TooltipWindow tooltip_window = new TooltipWindow();
+        [GLib.ConnectBefore]
+        protected virtual void OnTagviewMotionNotifyEvent(object o, Gtk.MotionNotifyEventArgs args)
+        {
+        TreePath path = null;
+        Console.WriteLine("autoOnTagviewMotionNotifyEvent");
+        tagview.GetPathAtPos((int)args.Event.X, (int)args.Event.Y, out path); 
+        if (path != null){
+           Requisition size = tooltip_window.SizeRequest();
+           tooltip_window.Move((int)(args.Event.XRoot - size.Width/2),
+                (int)(args.Event.YRoot  + 12));
+            KeyValuePair<string, string> item = (KeyValuePair<string, string>)itemByPath(tagstore, path);
+            tooltip_window.SetLabel( item.Value );
+            tooltip_window.Show();
+        }
+        }
+        [GLib.ConnectBefore]
+        protected virtual void OnTagviewLeaveNotifyEvent(object o, Gtk.LeaveNotifyEventArgs args)
+        {
+        Console.WriteLine("OnTagviewLeaveNotifyEvent");
+        tooltip_window.Hide();
         }
 
 }

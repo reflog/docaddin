@@ -2,15 +2,23 @@
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="CombineConfiguration">
       <Entry build="True" name="DocAddin" configuration="Debug" />
+      <Entry build="True" name="Packages" configuration="" />
+      <Entry build="True" name="Tests" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
       <Entry build="True" name="DocAddin" configuration="Release" />
+      <Entry build="True" name="Packages" configuration="" />
+      <Entry build="True" name="Tests" configuration="Release" />
     </Configuration>
   </Configurations>
   <StartMode startupentry="DocAddin" single="True">
     <Execute type="None" entry="DocAddin" />
+    <Execute type="None" entry="Packages" />
+    <Execute type="None" entry="Tests" />
   </StartMode>
   <Entries>
     <Entry filename="./DocAddin/DocAddin.mdp" />
+    <Entry filename="./Packages.mdse" />
+    <Entry filename="./Tests/Tests.mdp" />
   </Entries>
 </Combine>
