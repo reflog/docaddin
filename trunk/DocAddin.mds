@@ -11,7 +11,7 @@
       <Entry build="True" name="Tests" configuration="Release" />
     </Configuration>
   </Configurations>
-  <StartMode startupentry="DocAddin" single="True">
+  <StartMode startupentry="Tests" single="True">
     <Execute type="None" entry="DocAddin" />
     <Execute type="None" entry="Packages" />
     <Execute type="None" entry="Tests" />
