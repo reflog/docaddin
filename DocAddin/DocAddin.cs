@@ -43,6 +43,7 @@ namespace MonoDevelop.DocAddIn
                 DocAddin.Docer.collectNodes(nodes, n1, p);
             }
             Console.WriteLine("looking for func at pos "+ IdeApp.Workbench.ActiveDocument.TextEditor.CursorPosition);
+            Console.WriteLine("text is:\n"+IdeApp.Workbench.ActiveDocument.TextEditor.Text);
                 KeyValuePair<INode, DocAddin.CommentHolder> item = DocAddin.Docer.findNodeByPos(nodes, IdeApp.Workbench.ActiveDocument.TextEditor.Text, IdeApp.Workbench.ActiveDocument.TextEditor.CursorPosition);
                 if(item.Key != null){
                     if (item.Value.text != "") {

@@ -35,7 +35,7 @@ namespace Tests
             }
             KeyValuePair<INode, DocAddin.CommentHolder> mp = DocAddin.Docer.findNodeByPos(nodes, text, 174);
             Assert.IsNotNull(mp.Key);
-            Console.WriteLine("found Node {0}\nOld Comment:{1}\n", mp.Key, mp.Value);
+            Console.WriteLine("found Node {0}\nOld Comment:{1}\nAuto Comment:{2}\n", mp.Key, mp.Value, DocAddin.Docer.generateComment(mp.Key));
 		}
 	}
 }

@@ -49,7 +49,6 @@ namespace DocAddin
 
 
         public static System.Drawing.Point getEndPosition(INode node) {
-
             if(node is MethodDeclaration)
                 return ((MethodDeclaration)node).EndLocation;
 
@@ -88,14 +87,41 @@ namespace DocAddin
 
             return "wtf?";
         }
+        public static KeyValuePair<int, int> findNodeStart(INode node, string text){
+        int line = 0, s=-1, e=-1;
+            for(int i=0;i<text.Length ;i++) {            
+                if(text[i] == '\n')
+                    line++;
+               if (line == getStartPosition(node).Y){
+               Console.WriteLine("found item at line {0} type {1}", line , node.GetType());
+                   for(int j=i-1;j>0;j--){
+                       if(text[j] == '\n'){
+                       Console.WriteLine("found item start at " +j);
+                           s = j+1;
+                           e = i;                       
+                           break;
+                           }
+                   }
+               }
+               if(s!=-1 && e!= -1) break;
+            }
+            return new KeyValuePair<int, int>(s,e);
+        }
 
         public static KeyValuePair<INode, CommentHolder> findNodeByPos(List<KeyValuePair<INode, CommentHolder>> nodes, string text, int pos){
-            int i=0,line=0;
-            for(i=0;i<pos;i++) {
-                if(text[i] == '\n') line++;
+            int i=0,line=0,prevLineStart=0;
+            for(i=0;i<pos;i++) {            
+                if(text[i] == '\n'){
+                    line++;
+                    prevLineStart = i+1;
+                    Console.WriteLine("i am on line " + line);
+                }
                 foreach(KeyValuePair<INode, CommentHolder> p in nodes){
-                    if (line == getStartPosition(p.Key).Y && (pos-1 > getStartPosition(p.Key).X)) 
+                    KeyValuePair<int, int> ns = findNodeStart(p.Key, text);
+                    if (ns.Key != -1 && pos > ns.Key && pos < ns.Value){
+                    Console.WriteLine("foudn match " + p);
                             return p;                            
+                            }
                 }
              }
                 
