@@ -18,13 +18,12 @@ public class CommentHolder {
         return " text: " + text + " from : " + lineStart + " to : " + lineStop;
     }
 
-    public string prepare(int offset){
-        string o = "\n";
-        string off = new string(' ', offset);
-        foreach(string s in text.Trim().Split(new char[]{'\n'})){
-            o += off + "/// " + s + "\n";
+    public string prepare(string off){
+        string o = Environment.NewLine;
+        foreach(string s in text.Trim().Split(Environment.NewLine.ToCharArray())){
+            o += off + "/// " + s + Environment.NewLine;
         }
-        return o.TrimEnd(new char[]{'\n'});
+        return o.TrimEnd(Environment.NewLine.ToCharArray());
     }
 }
 

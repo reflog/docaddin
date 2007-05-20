@@ -82,7 +82,7 @@ namespace DocAddin
 		/// </param>
 		public static string [] SplitSelectionData (string data)
 		{
-			return Regex.Split (data, "\r\n");
+			return Regex.Split (data, Environment.NewLine);
 		}
 	}
 }

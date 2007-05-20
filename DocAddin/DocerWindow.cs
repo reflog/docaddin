@@ -181,7 +181,7 @@ public partial class DocerWindow : Gtk.Dialog {
             sr.Close ();
             File.WriteAllText(file+".docbak", Text);
             foreach(KeyValuePair<INode, CommentHolder> p in nodes) {
-                    Text = Docer.replaceLines(Text, p.Key, p.Value);
+                    Text = Docer.replaceComment(Text, p.Key, p.Value);
             }
 
             return Text;
@@ -228,7 +228,7 @@ protected virtual void OnTagviewDragBegin(object o, Gtk.DragBeginArgs args) {}
             if(funcview.Selection.GetSelectedRows().Length>0) {
                 try {
                     KeyValuePair<INode, CommentHolder> item = (KeyValuePair<INode, CommentHolder>)itemByPath(store, funcview.Selection.GetSelectedRows()[0]);
-                    if (item.Value.text != "") {
+                    if (item.Value.text != String.Empty) {
                         MessageDialog m = new MessageDialog(IdeApp.Workbench.RootWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo , "This will erase your old comment. Are you sure?", null);
                         if ((int)m.Run() == (int)ResponseType.No) return;
                     }
