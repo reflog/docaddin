@@ -9,7 +9,7 @@ namespace DocAddin
 	
 	public class TooltipWindow: Window
 	{
-	    Label label = new Label("");
+	    Label label = new Label(String.Empty);
 		public TooltipWindow():base(WindowType.Popup)
 		{
 		      Name = "gtk-tooltips";

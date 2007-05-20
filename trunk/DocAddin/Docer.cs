@@ -12,54 +12,27 @@ using Gtk;
 using GtkSourceView;
 using ICSharpCode.NRefactory.Parser;
 using ICSharpCode.NRefactory.Parser.AST;
-namespace DocAddin
-{
-	
-	
-	public class Docer
-	{
-	
-	    public static string generateComment(INode node) {
+namespace DocAddin {
+
+
+    public class Docer {
+
+        public static string generateComment(INode node) {
             StringBuilder sb = new StringBuilder();
-            sb.Append("<summary> </summary>\n");
+            sb.Append("<summary> </summary>"+Environment.NewLine);
             if (node is MethodDeclaration) {
 
                 MethodDeclaration m = node as MethodDeclaration;
                 foreach(ParameterDeclarationExpression param in m.Parameters) {
-                    sb.AppendFormat("<param name=\"{0}\"></param>\n", param.ParameterName);
+                    sb.AppendFormat("<param name=\"{0}\"></param>"+Environment.NewLine, param.ParameterName);
                 }
-                sb.AppendFormat("<returns>{0}</returns>\n",m.TypeReference.Type);
+                sb.AppendFormat("<returns>{0}</returns>"+Environment.NewLine,m.TypeReference.Type);
             }
             return sb.ToString();
         }
 
-        public static System.Drawing.Point getStartPosition(INode node) {
-
-            if(node is MethodDeclaration)
-                return ((MethodDeclaration)node).StartLocation;
-
-            if(node is TypeDeclaration)
-                return ((TypeDeclaration)node).StartLocation;
-
-            if(node is NamespaceDeclaration)
-                return ((NamespaceDeclaration)node).StartLocation;
-
-            return System.Drawing.Point.Empty;
-        }
 
 
-        public static System.Drawing.Point getEndPosition(INode node) {
-            if(node is MethodDeclaration)
-                return ((MethodDeclaration)node).EndLocation;
-
-            if(node is TypeDeclaration)
-                return ((TypeDeclaration)node).EndLocation;
-
-            if(node is NamespaceDeclaration)
-                return ((NamespaceDeclaration)node).EndLocation;
-
-            return System.Drawing.Point.Empty;
-        }
 
         public static Gdk.Pixbuf getNodePic(INode node) {
             if(node is MethodDeclaration)
@@ -71,7 +44,7 @@ namespace DocAddin
             if(node is NamespaceDeclaration)
                 return Gdk.Pixbuf.LoadFromResource("Icons.16x16.NameSpace");
 
-            return null;           
+            return null;
         }
 
         public static string getNodeName(INode node) {
@@ -87,50 +60,45 @@ namespace DocAddin
 
             return "wtf?";
         }
-        public static KeyValuePair<int, int> findNodeStart(INode node, string text){
-        int line = 0, s=-1, e=-1;
-            for(int i=0;i<text.Length ;i++) {            
-                if(text[i] == '\n')
-                    line++;
-               if (line == getStartPosition(node).Y){
-               Console.WriteLine("found item at line {0} type {1}", line , node.GetType());
-                   for(int j=i-1;j>0;j--){
-                       if(text[j] == '\n'){
-                       Console.WriteLine("found item start at " +j);
-                           s = j+1;
-                           e = i;                       
-                           break;
-                           }
-                   }
-               }
-               if(s!=-1 && e!= -1) break;
+        static private int linesCharCount(string []lines, int stop){
+            int offset = 0;
+            if (stop > lines.Length || stop < 0) return -1;
+            for(int i=0;i<stop;i++){
+                offset += lines[i].Length + Environment.NewLine.Length;
             }
-            return new KeyValuePair<int, int>(s,e);
+            return offset;
+        }
+        
+        public static KeyValuePair<int, int> findNodeStart(INode node, string [] text ) {
+        Console.WriteLine("counting chars till line "+ node.StartLocation.Y);
+            int offset = linesCharCount(text, node.StartLocation.Y);
+            offset += node.StartLocation.X;
+            Console.WriteLine("adding X {0} result {1}", node.StartLocation.X , offset);
+            Console.WriteLine("adding length of {0} which is {1} end result {2}", text[node.StartLocation.Y-1], text[node.StartLocation.Y-1].Length,offset+text[node.StartLocation.Y-1].Length-1);
+            return new KeyValuePair<int, int>(offset,offset+text[node.StartLocation.Y-1].Length-1);
+        }
+        
+        public static KeyValuePair<int, int> findNodeStart(INode node, string text) {
+            string [] lines = text.Split(Environment.NewLine.ToCharArray());
+            return findNodeStart(node, lines);
         }
 
-        public static KeyValuePair<INode, CommentHolder> findNodeByPos(List<KeyValuePair<INode, CommentHolder>> nodes, string text, int pos){
-            int i=0,line=0,prevLineStart=0;
-            for(i=0;i<pos;i++) {            
-                if(text[i] == '\n'){
-                    line++;
-                    prevLineStart = i+1;
-                    Console.WriteLine("i am on line " + line);
-                }
-                foreach(KeyValuePair<INode, CommentHolder> p in nodes){
+        public static KeyValuePair<INode, CommentHolder> findNodeByPos(List<KeyValuePair<INode, CommentHolder>> nodes, string text, int pos) {
+                    
+                foreach(KeyValuePair<INode, CommentHolder> p in nodes) {
                     KeyValuePair<int, int> ns = findNodeStart(p.Key, text);
-                    if (ns.Key != -1 && pos > ns.Key && pos < ns.Value){
-                    Console.WriteLine("foudn match " + p);
-                            return p;                            
-                            }
+                    Console.WriteLine("checking if line start {0} end {1} is ok for {2}", ns.Key, ns.Value, pos);
+                    if (ns.Key != -1 && pos > ns.Key && pos < ns.Value) {
+                        return p;
+                    }
                 }
-             }
-                
-            return new KeyValuePair<INode, CommentHolder> (null, null);            
+
+            return new KeyValuePair<INode, CommentHolder> (null, null);
         }
 
         public static CommentHolder findComment(INode node, IParser parser) {
             List<string> b = new List<string>();
-            int endPos = getStartPosition(node).Y;
+            int endPos = node.StartLocation.Y;
             int lastPos = endPos;
             int from = -1, to = endPos;
 
@@ -153,10 +121,10 @@ namespace DocAddin
             }
 
             b.Reverse();
-            string res = "";
+            string res = String.Empty;
 
             foreach(string s in b) {
-                res += s + "\n";
+                res += s + Environment.NewLine;
             }
 
             return new CommentHolder(res, from, to);
@@ -177,58 +145,48 @@ namespace DocAddin
             }
         }
 
-        public static string replaceLines(string orig, INode node, CommentHolder comment) {
-            int i=0,line=0,fromPos=-1,endPos=-1;
-            int offset = 0, funcPosEnd = -1;
-            if(comment.text != ""){
-            for(i=0;i<orig.Length;i++) {
-                if(orig[i] == '\n') line++;
+        private static string funcOffset(string line){
+        int o=0;
+        string r=String.Empty;
+        for(o=0;o<line.Length;o++)
+            if(Char.IsWhiteSpace(line[o])) r += line[o];
+            else 
+                break;
+          return r;
+        }
 
-                if (line == comment.lineStart-2 && fromPos == -1) {
-                    fromPos = i;
-                }
 
-                if (line == comment.lineStop-1 && endPos == -1) {
-                    endPos = i;
-                }
-
-                if (line == getStartPosition(node).Y) {
-                    funcPosEnd = i;
-                }
-            }
-
-            int startCount = -1;
-            if(funcPosEnd != -1) {
-
-                for(int j=funcPosEnd-1;j>0;j--) {
-                    if (orig[j] == '\n') {
-                        startCount = j;
-                        break;
+        public static string insertComment(string[] lines, INode node, CommentHolder comment, string offset) {
+            if(comment.text != String.Empty) {
+                    string p1 = String.Join(Environment.NewLine, lines, 0, node.StartLocation.Y-1);
+                    string p2 = String.Join(Environment.NewLine, lines, node.StartLocation.Y-1, lines.Length-node.StartLocation.Y);
+                    return p1 + comment.prepare(offset) + Environment.NewLine + p2;
                     }
+            return String.Join(Environment.NewLine, lines);
+        }
+        
+        public static string insertComment(string orig, INode node, CommentHolder comment,string offset) {
+            string [] lines = orig.Split(Environment.NewLine.ToCharArray());
+            return insertComment(lines, node, comment, offset);        
+        }
+        
+        public static string replaceComment(string orig, INode node, CommentHolder comment) {
+            if(comment.text != String.Empty) {
+
+            string [] lines = orig.Split(Environment.NewLine.ToCharArray());
+            string offset = funcOffset(lines[node.StartLocation.Y-1]);
+            
+                if (comment.lineStart != -1) {
+                    string p1 = String.Join(Environment.NewLine, lines, 0, comment.lineStart-2);
+                    string p2 = String.Join(Environment.NewLine, lines, comment.lineStop-1, lines.Length-comment.lineStop-1);
+                    return p1 + comment.prepare(offset) + Environment.NewLine + p2;
+                } else  {                
+                    return insertComment(lines, node, comment, offset);
                 }
-
-                if (startCount != -1) {
-                    int k=startCount+1,z=0;
-
-                    for(;k<funcPosEnd;k++,z++) {
-                        if(orig[k] != ' ' && orig[k] != '\t')
-                            break;
-                    }
-
-                    offset = z;
-                }
-
-            }
-
-            if (fromPos != -1 && endPos != -1) {
-                return orig.Substring(0, fromPos) + comment.prepare(offset) + orig.Substring(endPos);
-            }else if (startCount != -1){
-                return orig.Substring(0, startCount) + comment.prepare(offset) + orig.Substring(startCount);
-            }
             }
             return orig;
         }
 
-		
-	}
+
+    }
 }

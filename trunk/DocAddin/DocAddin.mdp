@@ -2,8 +2,8 @@
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="DotNetProjectConfiguration">
       <CustomCommands>
-        <Command type="BeforeExecute" command="/usr/bin/gksudo -S  cp /home/reflog/docaddin/DocAddin/bin/Debug/DocAddin.* /usr/lib/monodevelop/AddIns/DocAddIn/" externalConsole="True" />
-        <Command type="Execute" command="monodevelop" />
+        <Command type="BeforeExecute" command="sudo cp  /home/reflog/docaddin/DocAddin/*.xml /home/reflog/docaddin/DocAddin/bin/Debug/DocAddin.* /usr/lib/monodevelop/AddIns/DocAddIn/" externalConsole="True" />
+        <Command type="Execute" command="monodevelop" externalConsole="True" />
       </CustomCommands>
       <Output directory="./bin/Debug" assembly="DocAddin" />
       <Build debugmode="True" target="Library" />
